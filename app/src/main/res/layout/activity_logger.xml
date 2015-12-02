@@ -1,0 +1,234 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <RelativeLayout android:id="@+id/progress" android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:background="@mipmap/bg"
+        >
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Find It - Raise it"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"/>
+
+        <TextView
+            android:id="@+id/heading1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/heading"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="logged in as Test/id_12345"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"/>
+        <ImageView android:id="@+id/profile_img" android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:background="@mipmap/profile"/>
+        <LinearLayout android:id="@+id/lin_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_below="@+id/heading1"
+            android:layout_marginTop="10dp" android:orientation="horizontal">
+            <ImageView android:id="@+id/p1_progress"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_below="@+id/heading1"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
+                android:background="@mipmap/p1"
+                />
+
+            <ImageView android:id="@+id/p2_progress"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_below="@+id/heading1"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
+                android:background="@mipmap/p2"
+                />
+
+            <ImageView android:id="@+id/p3_progress"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_below="@+id/heading1"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
+                android:background="@mipmap/p3"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/info" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress"
+        android:paddingTop="-50dp"
+        android:layout_margin="10dp"
+        >
+        <TextView
+            android:id="@+id/priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="PROIRITY"
+            android:textColor="@android:color/black"
+            android:textSize="15dp"/>
+        <RadioGroup
+            android:id="@+id/radioGroupPriority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/priority"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_alignParentEnd="true">
+
+
+            <RadioButton
+                android:id="@+id/radioP1"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:checked="true"
+                android:text="P1"/>
+
+            <RadioButton
+                android:id="@+id/radioP2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="P2"/>
+
+            <RadioButton
+                android:id="@+id/radioP3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="P3"/>
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/severity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/priority"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="35dp"
+            android:gravity="center"
+            android:text="SEVERITY"
+            android:textColor="@android:color/black"
+            android:textSize="15dp"/>
+        <RadioGroup
+            android:id="@+id/radioGroupSeverity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/severity"
+
+            android:layout_below="@id/radioGroupPriority"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_alignParentEnd="true">
+
+
+            <RadioButton
+                android:id="@+id/radioS1"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:checked="true"
+                android:text="S1"/>
+
+            <RadioButton
+                android:id="@+id/radioS2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="S2"/>
+
+            <RadioButton
+                android:id="@+id/radioS3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="S3"/>
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/edittextSubject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_alignBottom="@+id/btnSpeak"
+            android:hint="Subject"
+            android:maxLines="1"
+            />
+        <Button
+            android:id="@+id/btnSpeak"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/radioGroupSeverity"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="5dp"
+            android:background="@mipmap/rec"
+            android:contentDescription="@null"/>
+        <!--    <ImageButton
+                android:id="@+id/btnSpeak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/edittextSubject"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="Speak"
+                android:background="@drawable/rec"/>-->
+        <EditText
+            android:id="@+id/edittextDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edittextSubject"
+            android:gravity="top"
+            android:hint="Description"
+            android:lines="3"/>
+
+        <TextView
+            android:id="@+id/toggle_btn_info" android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edittextDesc"
+            android:text="Attach the last captured screenshot"
+
+            />
+        <Switch
+            android:id="@+id/attachScreenshot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/edittextDesc"
+            android:layout_marginRight="20dp"
+            android:theme="@android:style/Theme.DeviceDefault.Light"
+            android:checked="false"/>
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/button"
+            android:layout_below="@id/attachScreenshot"
+            android:layout_marginTop="2dp"
+            />
+    </RelativeLayout>
+</RelativeLayout>

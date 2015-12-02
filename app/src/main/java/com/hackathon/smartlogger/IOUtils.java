@@ -47,7 +47,7 @@ public class IOUtils {
         File screenshotFile = getLastScreenshotTaken();
         if (screenshotFile == null)
             return null;
-        Bitmap bm = BitmapFactory.decodeFile("/path/to/image.jpg");
+        Bitmap bm = BitmapFactory.decodeFile(screenshotFile.getAbsolutePath());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
         byte[] byteArray = baos.toByteArray();

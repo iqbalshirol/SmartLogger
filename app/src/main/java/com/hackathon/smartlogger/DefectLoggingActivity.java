@@ -1,21 +1,25 @@
 package com.hackathon.smartlogger;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.hackathon.smartlogger.gateway.listener.RequestCallbackListener;
+import com.hackathon.smartlogger.gateway.request.DefectRequest;
+import com.hackathon.smartlogger.gateway.response.DefectResponse;
 
-import com.hackathon.smartlogger.R;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class DefectLoggingActivity extends Activity implements View.OnClickListener {
 
@@ -23,17 +27,18 @@ public class DefectLoggingActivity extends Activity implements View.OnClickListe
     // private TextView txtText;
     private EditText editTextSub;
     private EditText editTextDesc;
-    private ImageButton btnSpeak;
+    private Button btnSpeak;
     private RadioGroup radioGroupPriority;
     private RadioGroup radioGroupSeverity;
     private Button btnSubmit;
-    private CheckBox checkBoxScreenshot;
+    private Switch switchScreenshot;
     private DefectDTO defectDTO;
+    private ProgressDialog progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_logger);
         startService(new Intent(this, ChatHeadService.class));
 
         editTextSub = (EditText) findViewById(R.id.edittextSubject);
@@ -41,10 +46,10 @@ public class DefectLoggingActivity extends Activity implements View.OnClickListe
         radioGroupPriority = (RadioGroup) findViewById(R.id.radioGroupPriority);
         radioGroupSeverity = (RadioGroup) findViewById(R.id.radioGroupSeverity);
 
-        btnSpeak = (ImageButton) findViewById(R.id.btnSpeak);
+        btnSpeak = (Button) findViewById(R.id.btnSpeak);
 
-        checkBoxScreenshot = (CheckBox) findViewById(R.id.attachScreenshot);
-        btnSubmit = (Button) findViewById(R.id.btmSubmit);
+        switchScreenshot = (Switch) findViewById(R.id.attachScreenshot);
+        btnSubmit = (Button) findViewById(R.id.btnSubmit);
 
         btnSubmit.setOnClickListener(this);
         btnSpeak.setOnClickListener(this);
@@ -91,7 +96,7 @@ public class DefectLoggingActivity extends Activity implements View.OnClickListe
                 }
                 break;
 
-            case R.id.btmSubmit:
+            case R.id.btnSubmit:
                 defectDTO = new DefectDTO();
                 submitData();
                 break;
@@ -103,32 +108,32 @@ public class DefectLoggingActivity extends Activity implements View.OnClickListe
     }
 
     private void submitData() {
-        int priority = 0;
+        String priority = "";
         switch (radioGroupPriority.getCheckedRadioButtonId()) {
             case R.id.radioP1:
-                priority = 1;
+                priority = "P1-High";
                 break;
             case R.id.radioP2:
-                priority = 2;
+                priority = "P2-Medium";
                 break;
             case R.id.radioP3:
-                priority = 3;
+                priority = "P3-Low";
                 break;
             default:
                 break;
         }
         defectDTO.setPriority(priority);
 
-        int severity = 0;
+        String severity = "";
         switch (radioGroupSeverity.getCheckedRadioButtonId()) {
             case R.id.radioS1:
-                severity = 1;
+                severity = "S1-Crash";
                 break;
             case R.id.radioS2:
-                severity = 2;
+                severity = "S2-Major";
                 break;
             case R.id.radioS3:
-                severity = 3;
+                severity = "S3-Minor";
                 break;
             default:
                 break;
@@ -136,7 +141,7 @@ public class DefectLoggingActivity extends Activity implements View.OnClickListe
         defectDTO.setSeverity(severity);
 
         String screenshotData = null;
-        if (checkBoxScreenshot.isChecked())
+        if (switchScreenshot.isChecked())
             screenshotData = IOUtils.getLastCapturedScreenshot();
 
         defectDTO.setImageData(screenshotData);
@@ -147,10 +152,66 @@ public class DefectLoggingActivity extends Activity implements View.OnClickListe
         defectDTO.setSubject(defectSubject);
         defectDTO.setDescription(defectDescription);
 
-        if (defectSubject.equals("") || defectDescription.equals(""))
-            Toast.makeText(this, "Subject/Description cannot be empty", Toast.LENGTH_SHORT).show();
-        else
-            NetworkManager.submitdataToServer(defectDTO);
+        defectDTO.setAuthorEmail("iqbal.shirol@techendeavour.com");
+        defectDTO.setAuthor("Iqbal Shirol");
+        defectDTO.setImageName(UUID.randomUUID() + ".png");
+        defectDTO.setProjectID("PROJ_12345");
 
+        if (defectSubject.equals("") || defectDescription.equals("")) {
+            Toast.makeText(this, "Subject/Description cannot be empty", Toast.LENGTH_SHORT).show();
+        } else {
+
+            if (NetworkUtils.isNetworkAvailable(DefectLoggingActivity.this)) {
+                showLoader();
+                new DefectRequest(defectDTO, new RequestCallbackListener() {
+                    @Override
+                    public void onResponseReceived(final DefectDTO responseData) {
+                        Log.i("DefectLoggingResponse ", "   " + responseData.getResponseObj().toString());
+                        DefectLoggingActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DefectResponse response = (DefectResponse) responseData.getResponseObj();
+                                if (response.getServiceResponseStatus().equals("1")) {
+                                    Toast.makeText(DefectLoggingActivity.this, "Defect posted successfully !!", Toast.LENGTH_LONG).show();
+                                    finish();
+                                } else {
+                                    Toast.makeText(DefectLoggingActivity.this, "Defect posting fail", Toast.LENGTH_LONG).show();
+                                }
+                                hideLoader();
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onError(int code, String message) {
+                        DefectLoggingActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                hideLoader();
+                            }
+                        });
+                        Log.i("DefectLoggingResponse ", "   " + message);
+                    }
+                }).execute();
+            }
+        }
+
+    }
+
+    public void showLoader() {
+        progressBar = new ProgressDialog(DefectLoggingActivity.this);
+        progressBar.setCancelable(true);
+        progressBar.setMessage("Loading ...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.show();
+    }
+
+    public void hideLoader() {
+        if (progressBar != null) {
+            if (progressBar.isShowing()) {
+                progressBar.dismiss();
+            }
+        }
     }
 }
